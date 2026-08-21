@@ -186,7 +186,7 @@ BLANK_REASON = {
 }
 
 PROVENANCE = """Built {built} by scripts/build_postcode_table.py, in
-https://github.com/Harv334/pophealthmap at commit {commit}. That script is the
+this repository at commit {commit}. That script is the
 method statement: every choice below is argued in its docstring, and the file
 can be rebuilt from it.
 

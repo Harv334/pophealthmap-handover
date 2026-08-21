@@ -7,11 +7,11 @@
 <title>PopHealth Map - London population health by ward and LSOA</title>
 <meta name="description" content="Population health across all 33 London boroughs at ward and LSOA level. Deprivation, life expectancy, GP and pharmacy access, crime and green space, built entirely from open NHS and government data.">
 
-<!-- One canonical address. The site also answers on www and on the GitHub
-     Pages address, both of which redirect here, and any mirror carries a
-     noindex. Without this, a shared link with a tracking parameter reads as
-     a separate page competing with this one. -->
-<link rel="canonical" href="https://pophealth.uk/">
+<!-- No canonical is declared. This copy serves from its own GitHub
+     Pages address, and must not name another site as the original of
+     this page: a cross-domain canonical tells search engines this
+     deployment is a duplicate and should not rank. If you move it to
+     a domain of your own, add a canonical pointing at that. -->
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#005EB8">
 
@@ -20,17 +20,16 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PopHealth Map">
 <meta property="og:locale" content="en_GB">
-<meta property="og:url" content="https://pophealth.uk/">
 <meta property="og:title" content="PopHealth Map - London population health by ward and LSOA">
 <meta property="og:description" content="Deprivation, life expectancy, GP and pharmacy access, crime, air quality, transport access and green space for all 704 London wards and 4,994 LSOAs. Built entirely from open data.">
-<meta property="og:image" content="https://pophealth.uk/og.png">
+<meta property="og:image" content="og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PopHealth Map: population health across the 33 London boroughs at ward and LSOA level">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PopHealth Map - London population health by ward and LSOA">
 <meta name="twitter:description" content="Deprivation, life expectancy, GP and pharmacy access, crime and green space for all 704 London wards and 4,994 LSOAs.">
-<meta name="twitter:image" content="https://pophealth.uk/og.png">
+<meta name="twitter:image" content="og.png">
 
 <!-- Inline so it costs no request and cannot 404. A map pin in the map's own ink. -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a1a1a'/%3E%3Cpath d='M16 6c-3.9 0-7 3.1-7 7 0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z' fill='%23fff'/%3E%3Ccircle cx='16' cy='13' r='2.6' fill='%231a1a1a'/%3E%3C/svg%3E">
@@ -355,6 +354,8 @@
   .sb-tab.active { color: var(--ink); border-bottom-color: var(--nhs-blue); background: var(--paper); }
   /* Compare disables Area profile while it owns the map. Dimmed rather than
      removed, so the tab strip keeps its shape and the tooltip can say why. */
+  .dl-seg.cmp-locked button[data-dl] { opacity: .45; cursor: not-allowed; }
+  .dl-seg.cmp-locked button[data-dl].active { opacity: .8; }
   .sb-tab:disabled { color: var(--ink-3); opacity: .5; cursor: not-allowed; }
   .sb-tab:disabled:hover { color: var(--ink-3); background: none; }
   .tab-pane { display: none; }
@@ -1821,80 +1822,13 @@
      health data is most likely to be using. `dateModified` below is a
      starting value and is refreshed from the pipeline manifest at runtime,
      so it cannot drift out of step with the data. -->
-<script type="application/ld+json" id="ld-dataset">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://pophealth.uk/#website",
-      "url": "https://pophealth.uk/",
-      "name": "PopHealth Map",
-      "alternateName": "London Population Health Mapping",
-      "description": "An interactive map of population health across all 33 London boroughs, at ward and LSOA level.",
-      "inLanguage": "en-GB",
-      "publisher": { "@id": "https://pophealth.uk/#creator" }
-    },
-    {
-      "@type": "Person",
-      "@id": "https://pophealth.uk/#creator",
-      "name": "Harvey Seville",
-      "email": "contact@pophealth.uk"
-    },
-    {
-      "@type": "Dataset",
-      "@id": "https://pophealth.uk/#dataset",
-      "name": "London population health by ward and LSOA",
-      "description": "Population health, deprivation and service access indicators for all 33 London local authorities, published at 2024 ward and 2021 LSOA level. Covers 704 wards, 4,994 LSOAs, 1,146 GP practices, 1,737 pharmacies and 1,877 dental practices. Sources include OHID Fingertips, ONS Census 2021, IMD 2025, NHS ODS registers, QOF prevalence, police.uk recorded crime, DWP claimant count, fuel poverty, Charity Commission registers, Defra UK-AIR modelled background air quality and the Transport for London stop and station register. Every figure comes from a published source, named in the methodology. The air quality layers are Defra model output rather than measurements, and are labelled as such.",
-      "url": "https://pophealth.uk/",
-      "sameAs": "https://github.com/Harv334/pophealthmap",
-      "isAccessibleForFree": true,
-      "inLanguage": "en-GB",
-      "creator": { "@id": "https://pophealth.uk/#creator" },
-      "license": "https://pophealth.uk/methodology.html",
-      "usageInfo": "Most of this dataset is Open Government Licence v3.0. One source is not: the station and bus stop measures (rail_station_dist_m, rail_stations_1km, bus_stop_dist_m, bus_stops_800m) derive from Transport for London open data, licensed under version 2.0 of the Open Government Licence with amendments for Transport for London. Reusing those fields requires all three of: Powered by TfL Open Data; Contains OS data (c) Crown copyright and database rights 2016; Geomni UK Map data (c) and database rights 2019. Full terms and per-source licences: https://github.com/Harv334/pophealthmap/blob/main/DATA_LICENCES.md",
-      "dateModified": "2026-08-10",
-      "keywords": [
-        "population health",
-        "public health",
-        "London",
-        "ward",
-        "LSOA",
-        "deprivation",
-        "index of multiple deprivation",
-        "life expectancy",
-        "health inequalities",
-        "GP practices",
-        "pharmacies",
-        "NHS",
-        "open data"
-      ],
-      "spatialCoverage": {
-        "@type": "Place",
-        "name": "Greater London, United Kingdom",
-        "geo": {
-          "@type": "GeoShape",
-          "box": "51.28 -0.51 51.69 0.33"
-        }
-      },
-      "distribution": [
-        {
-          "@type": "DataDownload",
-          "name": "Ward-level indicators",
-          "encodingFormat": "application/json",
-          "contentUrl": "https://pophealth.uk/ward_data.json"
-        },
-        {
-          "@type": "DataDownload",
-          "name": "LSOA-level indicators",
-          "encodingFormat": "application/json",
-          "contentUrl": "https://pophealth.uk/lsoa_data.json"
-        }
-      ]
-    }
-  ]
-}
-</script>
+<!-- The structured-data block was removed when this copy was built.
+     It declared the site's identity: a canonical @id and url, a
+     sameAs pointing at the original repository, publisher and
+     creator nodes naming a person, a licence URL, and the two
+     dataset download URLs. All of it named the original site, so
+     none of it was true here. Write your own if you want this map
+     to appear in Google Dataset Search. -->
 </head>
 <body>
 
@@ -2094,8 +2028,13 @@
           <label class="lrow"><div class="ldot" style="background:#E89B1B"></div><span class="lname">Pharmacies <span class="lcount" id="pharm-count"></span></span><input type="checkbox" id="tph"></label>
         </div>
         <div class="sb-sec" style="flex-shrink:0;border-bottom:1px solid var(--line-2)">
-          <div class="sb-lbl">Culture &amp; creative space<button type="button" class="lhelp" title="Theatres, rehearsal rooms, artist and maker workspaces, recording studios and design workshops, from the GLA Cultural Infrastructure Map. This is where culture is made rather than where it is watched, so a rehearsal room counts and a cinema does not. It covers all 33 boroughs." aria-label="Explain this" aria-expanded="false">?</button></div>
-          <label class="lrow"><div class="ldot" style="background:#C2185B"></div><span class="lname">Culture &amp; creative spaces <span class="lcount" id="cult-count"></span></span><input type="checkbox" id="tcult"></label>
+          <div class="sb-lbl">Culture &amp; community space<button type="button" class="lhelp" title="Theatres, arts centres, dance and music venues, rehearsal spaces and makerspaces, from the GLA Cultural Infrastructure Map. Only places a resident can attend or take part in are shown: the workbook also maps where cultural goods are made, and a jeweller's workshop or a costume studio is a job rather than somewhere to go. Covers all 33 boroughs." aria-label="Explain this" aria-expanded="false">?</button></div>
+          <label class="lrow"><div class="ldot" style="background:#C2185B"></div><span class="lname">Culture &amp; community spaces <span class="lcount" id="cult-count"></span></span><input type="checkbox" id="tcult"></label>
+          <div id="cult-filter-wrap" style="margin:2px 0 4px 16px">
+            <select id="cult-type-filter" aria-label="Filter culture spaces by kind of venue" style="width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:5px;font-size:var(--t-xs);color:var(--ink);background:var(--paper)">
+              <option value="all" selected>All kinds of venue</option>
+            </select>
+          </div>
           <div style="font-size:var(--t-xs);color:var(--ink-3);margin-top:4px;line-height:1.3">Source: GLA Cultural Infrastructure Map</div>
         </div>
         <div class="sb-sec" style="flex-shrink:0;border-bottom:1px solid var(--line-2)">
@@ -2826,13 +2765,14 @@
        failed ward_data.json load reports itself, and it is empty otherwise. -->
   <footer class="sbar">
     <span class="sbar-left">
-      <a class="sbar-link" id="meth-link" href="methodology.html">Methodology &amp; technical notes</a>
-      <!-- The Accessibility link was taken out of this bar on request.
-           accessibility.html is still published and still reachable at its own
-           URL, and the methodology page header still links to it, so the
-           statement is not orphaned. It is the link in the footer that has
-           gone, not the statement. -->
-      <a class="sbar-link" href="mailto:contact@pophealth.uk">contact@pophealth.uk</a>
+      <!-- This bar carried three links and now carries none of them.
+           Accessibility went first, then Methodology, then the contact address,
+           each on request. accessibility.html and methodology.html are both
+           still published and still reachable at their own URLs, and the
+           methodology page header still links to the statement, so neither page
+           is orphaned: it is the links in this bar that have gone, not the
+           pages. #src-lbl stays because it is also where a failed
+           ward_data.json load reports itself, and is empty otherwise. -->
       <span id="src-lbl"></span>
     </span>
     <span class="sbar-right">
@@ -4168,6 +4108,28 @@ function rampClasses() { return window.cbSafe ? RAMP_CB : RAMP_DEFAULT; }
  * stop, so it already reads as "more of this", and the flip was the only thing
  * making it read as anything else.
  */
+/* Indicators whose numbers run the opposite way to the rest of the map.
+   The ramp is deliberately "dark is more of this", and for every figure here
+   that also means dark is the concerning end: more deprivation, more bad
+   health, more crime. Deprivation decile is the exception. It is a rank, and
+   MHCLG number it 1 for the most deprived tenth and 10 for the least, so the
+   same rule painted the safest tenth of London darkest and the poorest
+   lightest, directly opposite to the IMD score sitting next to it in the same
+   list. Flipping the position rather than the palette keeps one ramp for the
+   whole map and one rule for reading it: dark is the concerning end.
+   Keyed on the resolved field, so the ward aggregate and the LSOA figure that
+   feed off the same column cannot disagree. */
+const OV_INVERT_RAMP = { imd_decile: true, imd_decile_mean: true };
+function ovInverted(ovKey) {
+  if (!ovKey) return false;
+  const resolved = (typeof resolveOvField === 'function') ? resolveOvField(ovKey) : ovKey;
+  return !!(OV_INVERT_RAMP[ovKey] || OV_INVERT_RAMP[resolved]);
+}
+function ovT(ovKey, t) {
+  t = Math.max(0, Math.min(1, t));
+  return ovInverted(ovKey) ? 1 - t : t;
+}
+
 function rampIndex(t) {
   t = Math.min(Math.max(t, 0), 1);
   // The top value belongs in the last class rather than in a class of its own.
@@ -4790,7 +4752,7 @@ function _boroughStyle(feat) {
   if (!range || range.hi === range.lo) return base;
   const t = (v - range.lo) / (range.hi - range.lo);
   return Object.assign(base, {
-    fillColor: ramp(Math.max(0, Math.min(1, t))),
+    fillColor: ramp(ovT(ov, t)),
     fillOpacity: 0.5,
   });
 }
@@ -5141,12 +5103,47 @@ function loadCultureLayer(rows) {
     const wdRow = p.ward_name ? `<div class="pop-row"><span class="pop-key">Ward</span><span>${_esc(p.ward_name)}</span></div>` : '';
     marker.bindPopup(`<div class="pop-hdr" style="background:#C2185B">${_esc(p.name)}</div><div class="pop-body"><div class="pop-addr">${_esc([p.address,p.postcode].filter(Boolean).join(', '))}</div>${tyRow}<div class="pop-row"><span class="pop-key">Borough</span><span>${_esc(p.borough)}</span></div>${wdRow}</div>`);
     marker.bindTooltip(`${_esc(p.name)} · ${_esc(p.type||'Cultural space')}`, { direction:'top', className:'marker-tip' });
-    cultCluster.addLayer(marker);
     cultData.push({ ...p, marker });
   });
-  const el = document.getElementById('cult-count');
-  if (el) el.textContent = cultData.length.toLocaleString();
+  _buildCultureTypeFilter();
+  _applyCultureFilter();
   console.log(`Loaded ${cultData.length} cultural spaces`);
+}
+
+/* The kind-of-venue filter.
+   Built from the data rather than written out, because the typologies are the
+   GLA's and they revise them: a hardcoded list quietly stops offering a kind of
+   venue the moment one is renamed, and nothing about the map looks wrong. Each
+   option carries its own count, so choosing one is an informed choice rather
+   than a guess at what is behind it. */
+function _buildCultureTypeFilter() {
+  const sel = document.getElementById('cult-type-filter');
+  if (!sel) return;
+  const n = {};
+  cultData.forEach(d => { const k = d.type || 'Other'; n[k] = (n[k] || 0) + 1; });
+  const kinds = Object.keys(n).sort((a, b) => n[b] - n[a] || a.localeCompare(b));
+  const keep = sel.value;
+  sel.innerHTML =
+    `<option value="all">All kinds of venue (${cultData.length.toLocaleString()})</option>` +
+    kinds.map(k => `<option value="${_esc(k)}">${_esc(k)} (${n[k].toLocaleString()})</option>`).join('');
+  // A rebuild must not silently reset the filter the user chose.
+  if (keep && Array.prototype.some.call(sel.options, o => o.value === keep)) sel.value = keep;
+}
+
+function _applyCultureFilter() {
+  if (!Array.isArray(cultData)) return;
+  const sel = document.getElementById('cult-type-filter');
+  const want = (sel && sel.value) || 'all';
+  cultCluster.clearLayers();
+  let shown = 0;
+  cultData.forEach(d => {
+    if (want !== 'all' && (d.type || 'Other') !== want) return;
+    cultCluster.addLayer(d.marker);
+    shown++;
+  });
+  const el = document.getElementById('cult-count');
+  // The count follows the filter, so it always describes what is on the map.
+  if (el) el.textContent = shown.toLocaleString();
 }
 // Fetched by ensureLayerData('culture') when the toggle asks for it.
 
@@ -5530,7 +5527,7 @@ function ovColor(wn, ovKey) {
   const range = getOvRange(ovKey);
   if (!range) return '#ccc';
   const t = range.hi === range.lo ? 0.5 : (parseFloat(val) - range.lo) / (range.hi - range.lo);
-  return ramp(t);
+  return ramp(ovT(ovKey, t));
 }
 
 // Track which neighbourhoods are shaded (filled with their colour) via filter checkboxes.
@@ -7825,8 +7822,15 @@ function _setVcseLayerVisible(on) {
 _wireLazyToggle('td',  'dental',   dentalCluster);
 _wireLazyToggle('tph', 'pharmacy', pharmCluster);
 
-// ── Culture and creative space toggle (GLA Cultural Infrastructure Map) ──
+// ── Culture and community space toggle (GLA Cultural Infrastructure Map) ──
 _wireLazyToggle('tcult', 'culture', cultCluster);
+(function () {
+  const sel = document.getElementById('cult-type-filter');
+  if (!sel) return;
+  sel.addEventListener('change', () => {
+    if (typeof _applyCultureFilter === 'function') _applyCultureFilter();
+  });
+})();
 
 // ═══════════════════════════════════════════════════════════════════════════
 // LSOA IMD LAYER (embedded — no external files needed)
@@ -7928,7 +7932,7 @@ function imdStyle(feat, state) {
         const range = getLsoaRange(curOv);
         if (range && range.hi !== range.lo) {
           const t = (parseFloat(val) - range.lo) / (range.hi - range.lo);
-          base.fillColor = ramp(Math.max(0, Math.min(1, t)));
+          base.fillColor = ramp(ovT(curOv, t));
           shaded = true;
         }
       }
@@ -9037,7 +9041,7 @@ function msoaStyle(feat) {
   const t = (v - range.lo) / (range.hi - range.lo);
   return Object.assign(base, {
     fill: true,
-    fillColor: ramp(Math.max(0, Math.min(1, t))),
+    fillColor: ramp(ovT(curOv, t)),
     fillOpacity: 0.45,
     color: '#555',
   });
@@ -9550,18 +9554,28 @@ function _syncScaleNumbers() {
   const range = ovRangeForDisplay(curOv);
   const meta = ovMeta(curOv);
   const unitSuffix = (meta && meta.u && meta.u.length <= 6) ? (' ' + meta.u) : '';
-  const fmtLo = range ? fmtNum(range.lo, 1) + unitSuffix : cfg.lo;
-  const fmtHi = range ? fmtNum(range.hi, 1) + unitSuffix : cfg.hi;
+  let fmtLo = range ? fmtNum(range.lo, 1) + unitSuffix : cfg.lo;
+  let fmtHi = range ? fmtNum(range.hi, 1) + unitSuffix : cfg.hi;
+  let labLo = cfg.lo, labHi = cfg.hi;
+  /* The key reads left to right, light to dark, and it has to describe the map
+     rather than the numbers. Deprivation decile is painted backwards on purpose
+     (see OV_INVERT_RAMP), so its light end is decile 10 and its dark end is
+     decile 1. Leaving this alone put "More deprived (1)" under the palest
+     swatch, which is a key that contradicts the map it sits beside. */
+  if (ovInverted(curOv)) {
+    const swapN = fmtLo; fmtLo = fmtHi; fmtHi = swapN;
+    const swapL = labLo; labLo = labHi; labHi = swapL;
+  }
   const lo = document.getElementById('sc-lo');
   const hi = document.getElementById('sc-hi');
-  if (lo) lo.textContent = `${cfg.lo} (${fmtLo})`;
-  if (hi) hi.textContent = `${cfg.hi} (${fmtHi})`;
+  if (lo) lo.textContent = `${labLo} (${fmtLo})`;
+  if (hi) hi.textContent = `${labHi} (${fmtHi})`;
   const midEl = document.getElementById('sc-mid');
   if (midEl) midEl.textContent = range ? fmtNum((range.lo + range.hi) / 2, 1) + unitSuffix : '';
   const mlsMin = document.getElementById('mls-min');
   const mlsMax = document.getElementById('mls-max');
-  if (mlsMin) mlsMin.textContent = range ? (fmtNum(range.lo, 1) + unitSuffix) : '';
-  if (mlsMax) mlsMax.textContent = range ? (fmtNum(range.hi, 1) + unitSuffix) : '';
+  if (mlsMin) mlsMin.textContent = fmtLo;
+  if (mlsMax) mlsMax.textContent = fmtHi;
 }
 
 /* The overlay change, as a function rather than only as a listener.
@@ -9756,6 +9770,7 @@ function _setDataLevel(level, opts) {
   // state. Auto-sync paths (fromOverlay / fromLsoaToggle) skip the gate
   // because they reflect a level switch the system has already validated.
   if (!opts.fromOverlay && !opts.fromLsoaToggle && !opts.fromMsoaToggle
+      && !opts.fromCompare
       && level !== currentDataLevel
       && typeof curOv !== 'undefined' && curOv && curOv !== 'none'
       && typeof ovLevel === 'function') {
@@ -11530,18 +11545,12 @@ loadData();
                 handover build sets it false: a caveat about somebody else's
                 release schedule is noise in a repository that has just changed
                 hands.
-   methodology  the "Methodology & technical notes" link in the footer. Off by
-                default. methodology.html is still published and still reachable
-                at its own URL, and the page itself is unchanged; it is the
-                footer link that is hidden until somebody turns it on. */
+   The Methodology link this object used to govern is gone from the footer
+   altogether, so only the banner is left. methodology.html is still published
+   and still reachable at its own URL. */
 var PH_SHOW = {
   devBanner:   false,
-  methodology: false,
 };
-(function () {
-  var link = document.getElementById('meth-link');
-  if (link && PH_SHOW.methodology !== true) link.hidden = true;
-})();
 </script>
 
 <div id="dev-banner" role="status" hidden>
@@ -12906,6 +12915,46 @@ var PH_SHOW = {
     return n + ' ward' + (n === 1 ? '' : 's');
   }
 
+  /* Compare owns the area level while it is open.
+
+     The map is Compare's picker, and a picker that is showing wards while the
+     cards are adding up boroughs is two answers to one question. Worse, the
+     level badge is in the corner of the map and the Compare level chips are in
+     the panel, so a user who found the badge first would change the map under
+     a comparison that did not move, and nothing on screen would explain why.
+
+     So one control wins, and it is the one in the panel next to the cards it
+     governs. The badge follows it and is disabled while Compare is open, with
+     the reason on its tooltip. Leaving Compare hands it back. */
+  var CMP_DATA_LEVEL = { lsoa: 'lsoa', ward: 'ward', borough: 'borough',
+                         // A board has no data level of its own; its wards are
+                         // whole boroughs, so that is the honest map to show.
+                         icb: 'borough' };
+  function syncAreaLevelToCompare() {
+    // currentMode, not inCompareMode(): applyMode sets currentMode on its first
+    // line and swaps the pane's .active class further down, so a DOM check made
+    // from inside applyMode still reads the mode being left. That left the badge
+    // disabled after Compare had closed, with nothing on screen to unlock it.
+    var locked = (currentMode === 'compare');
+    var want = CMP_DATA_LEVEL[cmpLevel] || 'ward';
+    if (locked && typeof _setDataLevel === 'function'
+        && typeof currentDataLevel !== 'undefined' && currentDataLevel !== want) {
+      _setDataLevel(want, { fromCompare: true });
+    }
+    var seg = document.getElementById('dl-seg');
+    if (!seg) return;
+    Array.prototype.forEach.call(seg.querySelectorAll('button[data-dl]'), function (b) {
+      if (b.dataset.freeTitle === undefined) b.dataset.freeTitle = b.title || '';
+      b.disabled = locked;
+      b.setAttribute('aria-disabled', locked ? 'true' : 'false');
+      b.title = locked
+        ? 'Compare sets the area level. Change it with the row of sizes in the '
+          + 'Compare panel, or leave Compare.'
+        : b.dataset.freeTitle;
+    });
+    seg.classList.toggle('cmp-locked', locked);
+  }
+
   function setCmpLevel(lvl) {
     if (cmpLevel === lvl) return;
     cmpLevel = lvl;
@@ -12934,6 +12983,7 @@ var PH_SHOW = {
     drawPins();
     syncPinBtn();
     closeCompareBar();
+    syncAreaLevelToCompare();
   }
 
   function renderComparePane() {
@@ -14731,7 +14781,7 @@ var PH_SHOW = {
       '<h2>LSOAs included</h2><table><tr><th>LSOA</th><th>Name</th><th>Ward</th>' +
       '<th>Borough</th><th>Population</th></tr>' + list + '</table>' +
       '<h2>Source</h2><p style="color:var(--ink-2);font-size:var(--t-sm)">Built with PopHealth Map, ' +
-      'pophealth.uk. Figures are the same ones the map draws; see the methodology page ' +
+      'Figures are the same ones the map draws; see the methodology page ' +
       'for where each comes from and what it cannot tell you.</p>' +
       '</div><div class="actions">' +
       '<button onclick="window.print()">Print or save as PDF</button>' +
@@ -15079,6 +15129,7 @@ var PH_SHOW = {
         : '';
       if (lock && profTab.classList.contains('active')) sidebarTab('overlay');
     }
+    syncAreaLevelToCompare();
 
     // The area is built out of LSOAs, so the LSOA layer has to be the one on
     // the map. Without this the mode opens onto wards and clicking does

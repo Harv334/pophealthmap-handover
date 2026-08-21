@@ -217,9 +217,12 @@ not rank. `sitemap.xml` and `robots.txt` were left out and would need writing.
   that always fails is one you learn to ignore.
 - **The City of London's 20 wards** have no deprivation or health figures. The
   wards are tiny and share almost no LSOAs, so there is nothing to average.
-- **Culture means where culture is made.** The GLA set holds rehearsal rooms,
-  workshops and studios, not cinemas or libraries. It replaced five
-  hand-compiled layers that covered North West London only.
+- **Culture means somewhere to go.** Only the GLA typologies a resident can
+  attend are shown, which is 613 of the workbook's 1,557 records: theatres,
+  arts centres, dance and music venues, rehearsal rooms and makerspaces. The
+  rest are trade premises. The two lists are `CULTURE_PUBLIC_TYPES` and
+  `CULTURE_TRADE_TYPES` in `fetch_all_data.py`; moving a typology between them
+  is the whole of the change.
 - **DWP benefits are absent.** The public figures stop in 2018. Current ones
   need a DWP Stat-Xplore API key.
 - **The question panel** from the original site is not here. It needed a paid

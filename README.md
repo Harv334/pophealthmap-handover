@@ -3,7 +3,8 @@
 An interactive map of population health across all 33 London boroughs, at ward
 and LSOA level, and a single Python script that rebuilds it from public data.
 
-Live map: https://pophealth.uk
+Derived from the map published at https://pophealth.uk, which its
+original creator maintains separately. See "About pophealth.uk" below.
 
 Every figure comes from an open government or NHS source, and
 `RAW_DATA_SOURCES.md` says which one. Almost nothing is smoothed or estimated:
@@ -138,19 +139,19 @@ Point the domain at Pages with four `A` records for the apex
 to `<user>.github.io`. If the DNS is on Cloudflare, set those records to
 **DNS only** rather than proxied, or Pages cannot issue its certificate.
 
-### pophealth.uk
+### About pophealth.uk
 
-This repository is the one that keeps https://pophealth.uk updated, and it will
-go on being maintained here.
+https://pophealth.uk is the original of this map. It is published from a
+separate repository, and its creator will go on keeping it updated. This
+repository is not that one. It is an independent copy, and nothing done here
+reaches that site.
 
-**Leave the domain pointed at this repository's own GitHub Pages site.** The
-`CNAME` file in this repo is what claims it. A custom domain can only be claimed
-by one repository at a time, and GitHub awards it to whichever published most
-recently, so a second repository carrying the same `CNAME` does not fail
-loudly: it silently takes the domain, and pophealth.uk starts serving that
-repository instead. Any copy or fork must therefore keep no `CNAME` and serve
-from its own `<account>.github.io/<repo>/` address. The handover build drops
-the file for exactly this reason.
+**Do not put `pophealth.uk` in a `CNAME` file.** A custom domain can be claimed
+by only one repository at a time, and GitHub awards it to whichever published
+most recently, so a second repository naming it does not fail loudly: it takes
+the domain, and pophealth.uk starts serving this copy instead. This build ships
+no `CNAME` for that reason, and serves from `https://<account>.github.io/<repo>/`
+until you point an address of your own at it.
 
 ## Handing this over
 

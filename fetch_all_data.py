@@ -3320,27 +3320,40 @@ CULTURE_FILE_RE = re.compile(r"GLA_Cultural_Infrastructure_Map_data_(\d{4})\.xls
 # The 20 typology codes the workbook ships, in the words a reader would use.
 # Anything new falls back to the code with its underscores taken out, so an
 # added typology appears rather than disappearing into a blank label.
-CULTURE_TYPES = {
+# Which of the CIM's twenty typologies belong on a population health map.
+#
+# The workbook is an economic dataset: it maps the creative industries, and most
+# of what it holds is where cultural goods are manufactured. A jeweller's bench
+# and a costume workshop are jobs and floorspace. They are not somewhere a
+# resident goes, so they carry none of the mechanism that connects culture to
+# health, which is participation: turning up, taking part, being among people.
+#
+# So the line drawn here is attendance. A place is kept if a resident can go to
+# it to watch or take part, and dropped if it is somewhere goods are made. That
+# is a judgement, not a property of the data, which is why both sides are
+# written out in full: moving a typology between these two dicts is the whole
+# of the change.
+CULTURE_PUBLIC_TYPES = {
     "theatre": "Theatre",
-    "artist_workspaces": "Artist workspace",
-    "creative_workspace": "Creative workspace",
-    "jewellery_design": "Jewellery design",
-    "music_recording_studios": "Music recording studio",
+    "arts_centres": "Arts centre",
+    "dance_performance": "Dance performance space",
     "dance_rehearsal": "Dance rehearsal space",
     "theatre_rehearsal": "Theatre rehearsal space",
-    "prop_and_costume_making": "Prop and costume making",
-    "makerspace": "Makerspace",
-    "making_and_manufacturing": "Making and manufacturing",
-    "set_and_exhibition_building": "Set and exhibition building",
-    "fashion_and_design": "Fashion and design",
     "music_rehearsal_studios": "Music rehearsal studio",
     "music_rehearsal": "Music rehearsal studio",
-    "creative_coworking_deskspace": "Creative co-working space",
-    "dance_performance": "Dance performance space",
-    "arts_centres": "Arts centre",
-    "textile_design": "Textile design",
-    "live_in_artists_workspace": "Live-in artist workspace",
-    "livein_artists_workspace": "Live-in artist workspace",
+    # The borderline one, and the first to move if this line is redrawn.
+    # Makerspaces are open-access community workshops rather than trade
+    # premises, and are a common social prescribing destination.
+    "makerspace": "Makerspace",
+}
+# Kept as a list rather than an else-branch so that a reader can see what was
+# dropped and disagree with it without reading the GLA workbook.
+CULTURE_TRADE_TYPES = {
+    "jewellery_design", "music_recording_studios", "prop_and_costume_making",
+    "making_and_manufacturing", "set_and_exhibition_building",
+    "fashion_and_design", "textile_design", "artist_workspaces",
+    "creative_workspace", "creative_coworking_deskspace",
+    "live_in_artists_workspace", "livein_artists_workspace",
 }
 
 def _culture_discover_url() -> tuple[str, int]:
@@ -3388,6 +3401,8 @@ def run_culture() -> pd.DataFrame | None:
                            f"the workbook layout changed ({url})")
 
     lad_by_borough = {b.lower(): c for b, c in BOROUGHS}
+    dropped_trade: Counter = Counter()
+    dropped_unknown: Counter = Counter()
     rows = []
     for _, r in df.iterrows():
         lat, lng = _tofloat(r.get("latitude")), _tofloat(r.get("longitude"))
@@ -3398,6 +3413,13 @@ def run_culture() -> pd.DataFrame | None:
         if not lad:
             continue          # the file is London-only, so this is a rename
         typ = (r.get("typology") or "").strip().lower()
+        if typ not in CULTURE_PUBLIC_TYPES:
+            # Trade premises, or a typology the GLA have added since. Either way
+            # it is not somewhere a resident attends, so it is counted and
+            # reported rather than silently dropped.
+            bucket = dropped_trade if typ in CULTURE_TRADE_TYPES else dropped_unknown
+            bucket[typ or '(blank)'] += 1
+            continue
         addr = ", ".join(x.strip() for x in
                          [r.get("address1"), r.get("address2"), r.get("address3")]
                          if isinstance(x, str) and x.strip())
@@ -3408,9 +3430,19 @@ def run_culture() -> pd.DataFrame | None:
             "borough": borough,
             "lad_code": lad,
             "ward_name": (r.get("ward") or "").strip(),
-            "type": CULTURE_TYPES.get(typ, typ.replace("_", " ").capitalize()),
+            "type": CULTURE_PUBLIC_TYPES[typ],
             "lat": lat, "lng": lng,
         })
+
+    if dropped_unknown:
+        # A new typology is a decision somebody has to make, not something to
+        # infer. Naming it here is what stops it being dropped for years.
+        warn("culture: typologies not in either list, so left off the map: "
+             + ", ".join(f"{k} ({v:,})" for k, v in
+                         sorted(dropped_unknown.items(), key=lambda kv: -kv[1]))
+             + ". Add each to CULTURE_PUBLIC_TYPES or CULTURE_TRADE_TYPES.")
+    info(f"culture: kept {len(rows):,} attendable venues, "
+         f"dropped {sum(dropped_trade.values()):,} trade premises")
 
     out = pd.DataFrame(rows)
     out_path = DATA_DIR / "culture" / "cultural_infrastructure.parquet"
@@ -5657,15 +5689,41 @@ def run_tfl_transport() -> "pd.DataFrame | None":
 CUSTOM_DIR = DATA_DIR / "custom"
 
 
+def _clear_custom(reason: str) -> None:
+    """Leave data/custom describing nothing, because it now holds nothing.
+
+    Every exit that finds no usable figures goes through here. It used to be
+    that only one of them did, so deleting the CSV behind an indicator removed
+    its figures and kept its registry entry: the indicator stayed in the picker
+    and painted a blank map when chosen, with nothing to say why.
+    """
+    reg = CUSTOM_DIR / "custom_registry.json"
+    had = reg.exists() and reg.read_text(encoding="utf-8").strip() not in ("", "[]")
+    if had:
+        write_json_atomic(reg, [], pretty=True)
+        warn(f"custom: {reason}; cleared the registry, so any indicator it "
+             f"described is no longer offered")
+    else:
+        info(f"custom: {reason}")
+    for level in ("lsoa", "ward"):
+        stale = CUSTOM_DIR / f"custom_{level}.parquet"
+        if stale.exists():
+            stale.unlink()
+
+
 def run_custom() -> "pd.DataFrame | None":
     rule("Your own figures (data/custom)")
     if not CUSTOM_DIR.exists():
         info("custom: no data/custom directory, nothing to read")
         return None
 
-    specs = sorted(CUSTOM_DIR.glob("*.json"))
+    # custom_registry.json is this function's own output. Globbed as input it
+    # is reported every run as a spec with no CSV beside it, which is a warning
+    # about a file the user never created.
+    specs = sorted(s for s in CUSTOM_DIR.glob("*.json")
+                   if s.name != "custom_registry.json")
     if not specs:
-        info("custom: no CSV described in data/custom, nothing to read")
+        _clear_custom("no CSV described in data/custom")
         return None
 
     frames: dict[str, list] = {"LSOA21CD": [], "WD25CD": []}
@@ -5745,7 +5803,7 @@ def run_custom() -> "pd.DataFrame | None":
            f"{len(sub):,} {code_col} rows")
 
     if not registry:
-        warn("custom: nothing usable was found in data/custom")
+        _clear_custom("nothing usable was found in data/custom")
         return None
 
     CUSTOM_DIR.mkdir(parents=True, exist_ok=True)

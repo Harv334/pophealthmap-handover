@@ -238,7 +238,16 @@ individuals. In Query, a ward with no figure for one of your conditions can
 neither pass nor fail it, so it is left out of the results and the number left
 out is reported underneath them.</p>
 
-<h3>5. Colour follows the indicator, not the size of the number</h3>
+<h3>5. Dark is the concerning end</h3>
+
+<p>The map paints dark for more of whatever is being shown, and for almost every
+figure here that is also the concerning end: more deprivation, more bad health,
+more crime. Deprivation decile is the one exception, because it is a rank rather
+than a quantity and MHCLG number it 1 for the most deprived tenth and 10 for the
+least. Painting it the same way as everything else would have shaded the safest
+tenth of London darkest, directly opposite to the IMD score beside it in the
+same list, so that one indicator has its scale reversed and its key reversed
+with it.</p>
 
 <p>The highest IMD decile is the <em>least</em> deprived tenth, and the highest
 life expectancy is the best outcome, so colouring the largest value red would
@@ -262,10 +271,13 @@ so these will not always agree with a count made a different way.</p>
       and no Local Health indicators. They are tiny and share very few LSOAs,
       so there is nothing to aggregate. This is a property of the geography,
       not a fetch failure.</li>
-  <li><strong>Culture means where culture is made.</strong> The GLA set holds
-      rehearsal rooms, workshops and studios. It holds no cinemas, libraries or
-      schools, so it is not a measure of what a neighbourhood can go and
-      watch.</li>
+  <li><strong>Culture means somewhere to go, not everything cultural.</strong>
+      Only the GLA typologies a resident can attend are shown: theatres, arts
+      centres, dance and music venues, rehearsal rooms and makerspaces. The
+      workbook's other twelve typologies are trade premises, from jewellery
+      benches to costume workshops, and are jobs rather than places to go. There
+      are no cinemas or libraries in it either, so it is not a full picture of
+      what a neighbourhood can reach.</li>
   <li><strong>39 renumbered MSOAs.</strong> Fingertips still publishes the
       Local Health set against 2011 MSOA codes. Where a code no longer matches
       a 2021 one, the value is left missing rather than filled from a
@@ -280,10 +292,9 @@ so these will not always agree with a count made a different way.</p>
 
 <p>The whole map is rebuilt by one script, <code>fetch_all_data.py</code>, with
 no manual downloads. Sources, licences and per-source notes are in the
-repository: <a href="https://github.com/Harv334/pophealthmap">github.com/Harv334/pophealthmap</a>.</p>
+repository, in <code>RAW_DATA_SOURCES.md</code> and <code>DATA_LICENCES.md</code>.</p>
 
 <footer>
-  Questions or corrections: <a href="mailto:contact@pophealth.uk">contact@pophealth.uk</a>.
   Data is largely Open Government Licence v3 and carries its own attribution
   requirements; see <code>DATA_LICENCES.md</code> in the repository.
 </footer>
@@ -599,11 +610,12 @@ var SOURCES = [
     manifest: null,
     note: 'Derived here from the IMD rather than fetched.' },
 
-  { name: 'Culture and creative spaces',
+  { name: 'Culture and community spaces',
     pub: 'Greater London Authority',
-    what: 'Theatres, rehearsal rooms, artist and maker workspaces, recording ' +
-          'studios and design workshops. Where culture is made, so a rehearsal ' +
-          'room is included and a cinema is not.',
+    what: 'Theatres, arts centres, dance and music venues, rehearsal spaces and ' +
+          'makerspaces. Only places a resident can attend or take part in: the ' +
+          'workbook also maps where cultural goods are made, and those are left ' +
+          'out. 613 of its 1,557 records.',
     geo: 'Point',
     period: '2026 edition',
     cadence: 'Republished by the GLA, usually once a year.',

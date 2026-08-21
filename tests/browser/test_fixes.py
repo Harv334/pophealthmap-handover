@@ -221,12 +221,18 @@ try:
             "  .filter(function (x) { return /cancel|close/i.test(x.textContent); });"
             "if (b.length) b[0].click();")
 
-    # Fix 4: the CSV dialog copy.
+    # Fix 4: the toolbar CSV button and its dialog are gone.
+    #
+    # This pair used to assert the wording of that dialog. The button was
+    # removed in 97bfffa once Data export covered the same ground properly,
+    # and the copy went with it, so the second check had been failing ever
+    # since against a dialog that no longer exists. What is worth holding on
+    # to is that neither the button nor the old wording came back.
     src = d.page_source
     check("the CSV dialog no longer says 'the current borough focus'",
           "scoped to the current borough focus" not in src)
-    check("and says what it actually does",
-          "scoped to the area you have focused, board or borough" in src)
+    check("and the toolbar CSV button is still gone, superseded by Data export",
+          'id="tb-csv"' not in src and 'data-mode="csv"' in src)
 
     # Fix 5: the report failure path exists.
     check("the ward report has a failure path",

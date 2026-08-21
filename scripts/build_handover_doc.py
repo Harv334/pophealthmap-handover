@@ -290,10 +290,13 @@ def main() -> int:
     bullet("The City of London's 20 wards have no deprivation or health figures. "
            "The wards are tiny and share almost no neighbourhoods, so there is "
            "nothing to average. That is the geography, not a fault.")
-    bullet("Culture means where culture is made. The GLA set holds rehearsal "
-           "rooms, workshops and studios, and no cinemas or libraries. It "
-           "replaced five hand-compiled layers that covered North West London "
-           "only, so every layer on the map now covers all 33 boroughs.")
+    bullet("Culture means somewhere to go. Only the venue types a resident can "
+           "attend are shown, which is 613 of the GLA workbook's 1,557 records: "
+           "theatres, arts centres, dance and music venues, rehearsal rooms and "
+           "makerspaces. The rest are trade premises, such as jewellery benches "
+           "and costume workshops, which are jobs rather than places to go. The "
+           "two lists are CULTURE_PUBLIC_TYPES and CULTURE_TRADE_TYPES in "
+           "fetch_all_data.py; moving a type between them is the whole change.")
     bullet("DWP benefit figures are not included. The publicly available ones "
            "stop in 2018. Current figures need a DWP Stat-Xplore account.")
     bullet("Some health figures are published for a whole borough and repeated "
