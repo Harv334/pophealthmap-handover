@@ -1,5 +1,5 @@
 {
-  "last_run": "2026-08-21T15:06:22.439304+00:00",
+  "last_run": "2026-08-21T16:47:38.538604+00:00",
   "sources": {
     "air_quality": {
       "duration_s": 8.9,
@@ -326,9 +326,9 @@
       "status": "ok"
     },
     "imd": {
-      "duration_s": 0.0,
+      "duration_s": 0.1,
       "error": "",
-      "fetched_at": "2026-08-15T03:36:06.715429+00:00",
+      "fetched_at": "2026-08-21T15:34:27.313906+00:00",
       "notes": "",
       "output_path": "",
       "rows_written": 33755,
@@ -369,9 +369,9 @@
       "status": "ok"
     },
     "ptal": {
-      "duration_s": 0.5,
+      "duration_s": 0.8,
       "error": "",
-      "fetched_at": "2026-08-15T12:57:30.757486+00:00",
+      "fetched_at": "2026-08-21T16:47:37.732376+00:00",
       "notes": "",
       "output_path": "data/demographics/ptal.parquet",
       "rows_written": 4835,

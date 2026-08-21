@@ -45,7 +45,10 @@ try:
     def weights():
         return d.execute_script("""
           function w(sel){var p=document.querySelector(sel); return p? parseFloat(p.getAttribute('stroke-width')):null;}
-          return { ward: w('path[stroke="#000"]'), lsoa: w('path[stroke="#1E4B8E"]'),
+          // LSOA edges are LSOA_EDGE.default, #6B6B6B. They were #1E4B8E when this
+          // was written, so the selector matched nothing and the check read as a
+          // slider that does not reach LSOAs rather than as a stale colour.
+          return { ward: w('path[stroke="#000"]'), lsoa: w('path[stroke="#6B6B6B"]'),
                    msoa: w('path[stroke="#7A2E8E"]') };
         """)
     d.execute_script("""document.querySelector('#dl-seg button[data-dl="msoa"]').click();""")

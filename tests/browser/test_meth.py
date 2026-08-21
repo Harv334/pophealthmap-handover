@@ -35,8 +35,11 @@ try:
     check("service counting method documented",
           "ward polygon" in txt and "stands in" in txt)
     check("missing-is-not-zero documented", "Missing is not zero" in txt)
+    # The section was retitled "Dark is the concerning end" when deprivation
+    # decile had its scale reversed, so the page now names the rule and its one
+    # exception rather than describing polarity in the abstract.
     check("polarity of the colours explained",
-          "colour follows the" in txt.lower() and "least" in txt)
+          "concerning end" in txt.lower() and "least" in txt)
     check("uncoloured rows explained", "no better or worse end" in txt)
     check("borough-level repetition is flagged",
           "repeated" in txt and "every ward in that borough" in txt)

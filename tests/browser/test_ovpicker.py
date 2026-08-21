@@ -49,7 +49,9 @@ try:
     check("but the select is still in the DOM as the source of truth",
           d.execute_script("return !!document.getElementById('ov')"))
     check("the picker replaced it", st["picker"])
-    check("every category is present", st["groups"] == 14, str(st["groups"]))
+    # Fourteen categories were consolidated into seven on request: the picker
+    # had more headings than several of them had indicators.
+    check("every category is present", st["groups"] == 7, str(st["groups"]))
     check("every indicator became a tick box, none lost",
           st["boxes"] == st["selOpts"], f"{st['boxes']} boxes vs {st['selOpts']} options")
     check("nothing is selected to start with", st["cur"] == "No overlay", st["cur"])

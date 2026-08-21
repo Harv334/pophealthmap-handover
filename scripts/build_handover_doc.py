@@ -284,9 +284,10 @@ def main() -> int:
     h("6. Known limitations", 1)
     para("Written down plainly, because a handover that hides them is worse than "
          "no handover.")
-    bullet("The browser tests do not all pass. Seven have a failing check, mostly "
-           "selectors that went stale as the interface changed. Worth fixing "
-           "first: a suite that always fails is one you learn to ignore.")
+    bullet("Two pipeline tests need a cache that is not committed. test_guards and "
+           "test_guards_gp read a downloaded NHS ODS extract from .cache/, which is "
+           "gitignored, so they fail in a fresh clone until the pipeline has been "
+           "run once. Everything else, browser and pipeline, passes.")
     bullet("The City of London's 20 wards have no deprivation or health figures. "
            "The wards are tiny and share almost no neighbourhoods, so there is "
            "nothing to average. That is the geography, not a fault.")

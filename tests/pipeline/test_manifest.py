@@ -14,10 +14,25 @@ def boom():
 
 F.SOURCES = dict(F.SOURCES)
 F.SOURCES["ptal"] = boom
+
+# Write the manifest somewhere disposable.
+#
+# This test makes a source fail on purpose and then runs the real main(),
+# which ends by writing the real data/meta/manifest.json. That file is
+# committed and the public methodology page reads it, so running this test
+# left the site reporting PTAL as failed with "simulated upstream outage" as
+# the reason, against data that was present and correct. Under .cache/
+# rather than the system temp directory, because write_manifest logs the
+# path relative to the repo root and raises on anything outside it.
+_tmp = REPO / ".cache" / "test_manifest_ptal.json"
+_tmp.parent.mkdir(parents=True, exist_ok=True)
+_tmp.unlink(missing_ok=True)
+F.MANIFEST_PATH = _tmp
+
 sys.argv = ["x", "--only", "imd", "ptal"]
 F.main()
 
-m = json.load(open(REPO / "data/meta/manifest.json"))
+m = json.load(open(_tmp))
 print("\n--- manifest ---")
 print("last_run:", m["last_run"])
 print("keys:", sorted(m["sources"]))

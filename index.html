@@ -2066,7 +2066,7 @@
           </div>
           <label class="lrow"><div style="width:9px;height:9px;border:1.5px solid #000;border-radius:2px;flex-shrink:0"></div><span class="lname">Ward boundaries <span class="lcount" id="ward-count">704</span></span><input type="checkbox" id="tnw" checked></label>
           <label class="lrow"><div style="width:9px;height:9px;border:1.5px solid #7A2E8E;border-radius:2px;flex-shrink:0"></div><span class="lname">MSOA boundaries <span class="lcount" id="msoa-count"></span></span><input type="checkbox" id="tmsoa"></label>
-          <label class="lrow"><div style="width:9px;height:9px;border:1.5px solid #1E4B8E;border-radius:2px;flex-shrink:0"></div><span class="lname">LSOA boundaries <span class="lcount" id="lsoa-count"></span></span><input type="checkbox" id="tlsoa"></label>
+          <label class="lrow"><div style="width:9px;height:9px;border:1.5px solid #6B6B6B;border-radius:2px;flex-shrink:0"></div><span class="lname">LSOA boundaries <span class="lcount" id="lsoa-count"></span></span><input type="checkbox" id="tlsoa"></label>
           <label id="lsoa-imd-row" class="lrow" style="display:none;margin-left:18px;padding:3px 0 0"><div id="imd-row-swatch" style="width:9px;height:9px;border-radius:2px;flex-shrink:0"></div><span class="lname" style="font-size:var(--t-xs)">Colour by IMD decile</span><input type="checkbox" id="tlsoa-imd"></label>
           <div id="lsoa-filter-row" style="display:none;margin:4px 0 0 18px">
             <div style="margin-top:6px;display:flex;align-items:center;gap:2px;font-size:var(--t-xs);color:var(--ink-2)">
@@ -14815,7 +14815,15 @@ var PH_SHOW = {
   var _cbLsoaPending = false;
   var cbScope = '';
   var cbCols = {};          // indicator key -> true
+  /* Which figure groups are expanded.
+     Empty means every group is open, not closed. The pane's whole job is
+     choosing columns, and a group that starts collapsed hides the checkboxes
+     that are the only thing to do here: the pane opened on eight headings, a
+     "No figures chosen" line and nothing to tick, which reads as a broken
+     panel rather than as an accordion. A key is written only when a group is
+     collapsed by hand, so `!== false` is the test everywhere. */
   var cbOpenGroups = {};
+  function cbGroupOpen(g) { return cbOpenGroups[g] !== false; }
 
   var CB_LEVELS = {
     ward:    { label: 'ward',          plural: 'wards' },
@@ -14944,7 +14952,7 @@ var PH_SHOW = {
     $('cb-clear').hidden = !chosen;
 
     $('cb-cols').innerHTML = Object.keys(groups).sort().map(function (g, gi) {
-      var open = cbOpenGroups[g] || false;
+      var open = cbGroupOpen(g);
       var hit = groups[g].filter(function (k) { return cbCols[k]; }).length;
       return '<div><div class="cb-grp-hd' + (open ? ' open' : '') + '" data-grp="' + esc(g) +
         '" role="button" tabindex="0" aria-expanded="' + open + '">' +
@@ -15049,7 +15057,7 @@ var PH_SHOW = {
       var hd = e.target.closest('[data-grp]');
       if (hd) {
         var g = hd.getAttribute('data-grp');
-        cbOpenGroups[g] = !cbOpenGroups[g];
+        cbOpenGroups[g] = !cbGroupOpen(g);
         renderCsvPane();
         return;
       }

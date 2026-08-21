@@ -212,9 +212,10 @@ not rank. `sitemap.xml` and `robots.txt` were left out and would need writing.
 
 ## Known limitations
 
-- **The browser tests do not all pass.** Seven have a failing check, mostly
-  selectors that rotted as the interface changed. Worth fixing first: a suite
-  that always fails is one you learn to ignore.
+- **Two pipeline tests need a cache that is not committed.** `test_guards` and
+  `test_guards_gp` read a downloaded ODS extract from `.cache/`, which is
+  gitignored. Run `python fetch_all_data.py --only pharmacies` once and both
+  pass. Everything else, browser and pipeline, is green.
 - **The City of London's 20 wards** have no deprivation or health figures. The
   wards are tiny and share almost no LSOAs, so there is nothing to average.
 - **Culture means somewhere to go.** Only the GLA typologies a resident can

@@ -256,8 +256,22 @@ try:
           stack["ask"]["r"] <= stack["inner"], str(stack["ask"]))
 
     # ── phase 4: touch targets ───────────────────────────────────────────────
-    d.execute_script("document.getElementById('hdr-menu').click();")
-    time.sleep(1.2)
+    # Open the drawer AND bring the Layers tab to the front of it. The rows being
+    # measured live in that pane, and the phases above leave a different one
+    # active, so this measured nothing: every .lrow had a null offsetParent and
+    # the check reported "smallest 0px across 0 rows", which reads as a collapsed
+    # row rather than as nothing having been looked at. Under touch emulation the
+    # rows are 40px, which is what the coarse-pointer rule in the stylesheet says.
+    d.execute_script("""
+      var bar = document.querySelector('.sidebar');
+      if (bar && !bar.classList.contains('open')) {
+        document.getElementById('hdr-menu').click();
+      }
+      var tab = [...document.querySelectorAll('.sb-tab')]
+                  .find(function (x) { return x.dataset.tab === 'layers'; });
+      if (tab) tab.click();
+    """)
+    time.sleep(1.5)
     touch = d.execute_script("""
       var rows = [...document.querySelectorAll('.sidebar .lrow')]
                    .filter(e => e.offsetParent)
@@ -325,7 +339,13 @@ try:
       return { sidebarW: Math.round(sb.width), sidebarVisible: sb.left >= 0,
                menuHidden: getComputedStyle(document.getElementById('hdr-menu')).display === 'none',
                toolbarInHeader: !!document.querySelector('.hdr .hdr-right'),
-               subShown: getComputedStyle(document.querySelector('.hdr-sub')).display !== 'none',
+               // .hdr-sub went with the strapline in 4a86526. getComputedStyle
+               // throws on null, so this took the whole file down before the
+               // desktop checks below it ever ran.
+               subShown: (function () {
+                 var e = document.querySelector('.hdr-sub');
+                 return e ? getComputedStyle(e).display !== 'none' : null;
+               })(),
                scrim: document.getElementById('sb-scrim').hidden };
     """)
     check("desktop keeps the sidebar as a column",
@@ -335,7 +355,9 @@ try:
     check("the toggle is present on desktop, collapsing rather than drawering",
           not dk["menuHidden"] and dk["scrim"], str(dk))
     check("the toolbar stays in the header", dk["toolbarInHeader"])
-    check("the instruction line is still there", dk["subShown"])
+    # The strapline was taken out of the header in 4a86526, so its absence is
+    # the intended state. subShown is null when the element is not there.
+    check("the header strapline stays gone", dk["subShown"] is None, str(dk["subShown"]))
     check("and no scrim", dk["scrim"])
 
     sev = [e for e in d.get_log("browser")
