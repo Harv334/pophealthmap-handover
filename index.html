@@ -1453,30 +1453,63 @@
   /* The tab strip standing down for this mode is handled once, with the mode bar that replaces it. See .sb-modebar. */
   .cb-pane { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
   .cb-scroll { overflow-y: auto; overflow-x: hidden; min-height: 0; flex: 1; }
-  .cb-head { padding: 13px 14px 11px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+  /* Compact, because everything above the figure list is a cost paid before
+     the reader reaches the only thing on this panel they have to act on. On
+     a 768-tall screen the head and three steps came to 436px against a 422px
+     pane, so the list began exactly one pixel past the fold and the panel
+     looked finished and empty. */
+  .cb-head { padding: 9px 14px 8px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
   .cb-head .cmp-row { display: flex; align-items: baseline; gap: 8px; }
   .cb-head h2 { font-family: 'Inter Tight', Inter, sans-serif; font-size: var(--t-xl); font-weight: 600;
     margin: 0; letter-spacing: -.01em; color: var(--nhs-dark); flex: 1; min-width: 0; }
-  .cb-head .cb-sub { font-size: var(--t-sm); color: var(--ink-3); margin-top: 3px; line-height: 1.45; }
-  .cb-step { padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  .cb-head .cb-sub { font-size: var(--t-sm); color: var(--ink-3); margin-top: 2px; line-height: 1.35; }
+  .cb-step { padding: 7px 14px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
   .cb-step > h3 { display: flex; align-items: baseline; gap: 6px; font-size: var(--t-sm);
-    font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+    font-weight: 600; color: var(--ink); margin: 0 0 2px; }
   .cb-n { flex: 0 0 auto; width: 15px; height: 15px; border-radius: 50%; background: var(--nhs-blue);
     color: var(--on-accent); font-size: var(--t-xs); font-weight: 700; display: inline-flex; align-items: center;
     justify-content: center; font-family: 'JetBrains Mono', ui-monospace, monospace; }
-  .cb-help { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.45; margin: 0 0 7px 21px; }
+  .cb-help { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.35; margin: 0 0 4px 21px; }
   .cb-seg { display: flex; gap: 4px; flex-wrap: wrap; }
   .cb-seg button { appearance: none; font: inherit; font-size: var(--t-sm); padding: 5px 10px;
     border: 1px solid var(--line); border-radius: 999px; background: var(--paper);
     color: var(--ink-2); cursor: pointer; }
   .cb-seg button.on { background: var(--nhs-blue); border-color: var(--nhs-blue); color: var(--on-accent);
     font-weight: 600; }
-  .cb-picked { padding: 9px 14px; font-size: var(--t-sm); font-weight: 600; color: var(--nhs-blue);
-    border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+  .cb-picked { padding: 6px 14px; font-size: var(--t-sm); font-weight: 600; color: var(--nhs-blue);
+    border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0; position: sticky; top: 0; z-index: 2; background: var(--paper); }
   .cb-picked strong { color: var(--nhs-dark); font-variant-numeric: tabular-nums; }
   .cb-picked .cb-none { margin-left: auto; appearance: none; background: none; border: 0;
     font: inherit; font-size: var(--t-xs); color: var(--ink-3); cursor: pointer; text-decoration: underline; }
-  .cb-cols { max-height: 300px; overflow-y: auto; overflow-x: hidden; }
+  /* The figure list takes whatever height is left and scrolls inside itself.
+
+     It was `max-height: 300px` and nothing else, which made it a flex item in
+     a column that could shrink below its content: with the steps above it and
+     the buttons below, it settled at 92 pixels holding 4,444 of checkboxes.
+     Two or three rows peeked out between the "No figures chosen" line and the
+     note under it, so the panel read as empty and the list looked like it had
+     not rendered at all.
+
+     flex: 1 1 auto so it grows into the space rather than being squeezed out
+     of it, and a min-height so it cannot be squeezed again by whatever gets
+     added above it later. The scroll stays on this box rather than moving to
+     the pane, which keeps Download CSV where it can be reached instead of
+     four thousand pixels below the fold. */
+  /* The figure list is its natural height, and the pane is what scrolls.
+
+     Two earlier shapes both failed. `max-height: 300px` made it a flex item
+     that could shrink below its content, so with the three steps above it and
+     the buttons below it settled at 92 pixels holding 4,444 of checkboxes:
+     two rows peeked out and the panel read as empty. Giving it its own
+     scrollbox was no better, because the steps above are 437 pixels on their
+     own, so on a 768-tall screen the box was pushed off the bottom entirely
+     and showed nothing at all.
+
+     So there is one scroll, on the pane, and the list is simply as long as it
+     is. The actions below are sticky, which is what makes that safe: Download
+     CSV stays on screen instead of sitting four thousand pixels down. */
+  .cb-cols { flex: 0 0 auto; overflow: visible; }
   .cb-grp-hd { display: flex; align-items: center; gap: 6px; padding: 7px 14px; cursor: pointer;
     background: var(--paper-2); border-bottom: 1px solid var(--line); font-size: var(--t-xs);
     font-weight: 600; color: var(--ink-2); user-select: none; }
@@ -1496,9 +1529,14 @@
   .cb-col .l { flex: 1; min-width: 0; line-height: 1.35; }
   .cb-col.on .l { font-weight: 600; color: var(--nhs-dark); }
   .cb-acts { display: flex; gap: 5px; padding: 10px 14px; border-top: 1px solid var(--line);
-    flex-shrink: 0; background: var(--paper-2); }
+    flex-shrink: 0; background: var(--paper-2);
+    /* Pinned to the bottom of the scrolling pane, so the button that does
+       the thing this panel exists for is reachable at any point in a list
+       that is thousands of pixels long. */
+    position: sticky; bottom: 0; z-index: 2; }
   .cb-acts .ws-btn { flex: 1; justify-content: center; }
-  .cb-note { font-size: var(--t-xs); line-height: 1.45; color: var(--ink-3); padding: 0 14px 11px; }
+  .cb-note { font-size: var(--t-xs); line-height: 1.45; color: var(--ink-3); padding: 0 14px 11px;
+    flex-shrink: 0; }
 
   /* ── Directory ────────────────────────────────────────────────────────────
      Every point dataset on the map as one searchable list. The map answers
@@ -2428,8 +2466,7 @@
             <h2>Data export</h2>
             
           </div>
-          <div class="cb-sub">Build a spreadsheet. Choose the areas, then the figures. The file
-            downloads to your computer.</div>
+          <div class="cb-sub">Build a spreadsheet: choose the areas, then the figures.</div>
         </div>
 
         <div class="cb-step">
@@ -2451,9 +2488,12 @@
           </select>
         </div>
 
-        <div class="cb-step" style="border-bottom:none;padding-bottom:4px">
+        <div class="cb-step" style="border-bottom:none;padding-bottom:2px">
+          <!-- No help line here. It read "Each figure you tick becomes one
+               column", which the header two blocks up already says, and it was
+               the last thing standing between the reader and the checkboxes on
+               a short screen. -->
           <h3><span class="cb-n">3</span>Which figures?</h3>
-          <div class="cb-help">Each figure you tick becomes one column.</div>
         </div>
         <div class="cb-picked" id="cb-picked">
           <span>No figures chosen</span>
