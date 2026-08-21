@@ -24,8 +24,6 @@ shows a figure that was not published for that exact area:
 |---------------------|----------------------------------------------------|
 | `index.html`        | The map itself - Leaflet, deployed to GitHub Pages |
 | `data/map/`         | The map's data as classic scripts loaded before the app: ward and borough boundaries, LSOA IMD, GP practices, hospitals. Moved out of `index.html` in Phase 3.1, which took it from 1.77 MB to 486 KB. |
-| `data/map/assistant.js` | The AI question panel. Inert until `ASSISTANT_ENDPOINT` points at a deployed Worker. |
-| `worker/`           | Cloudflare Worker that proxies the Anthropic API. Holds the only secret in the project. See `worker/README.md`. |
 | `map_data.py`       | Reads `data/map/*.js` from Python. Use this rather than parsing `index.html`. |
 | `fetch_all_data.py` | One script. Downloads everything, builds the JSON the map reads, writes `data/map/`. |
 | `ward_data.json`    | Ward-level indicators (704 wards) - consumed by the map at load |
@@ -39,7 +37,7 @@ shows a figure that was not published for that exact area:
 ## Coverage
 
 All 33 London boroughs plus the City of London: 704 wards, 4,994 LSOAs, 1,146
-GP practices, 1,737 pharmacies and 1,877 dental practices.
+GP practices, 1,737 pharmacies and 1,663 NHS dental practices.
 
 Deprivation covers 684 of the 704 wards. The 20 without a score are all City of
 London wards, which are tiny and share very few LSOAs between them, so there is
@@ -69,11 +67,13 @@ that ETag as `If-None-Match`, so an unchanged file costs a single `304` and no
 download. Each download is validated before it replaces the cache; if validation
 fails the cached copy is kept and the run continues.
 
-Dental practices are ODS plus a curated overlay
-(`data/curated/dental_practices_curated.json`) that adds NHS availability, which
-ODS does not record. The two are joined on postcode rather than name, because
-ODS names practices generically ("Dental Surgery") often enough that name
-matching double-plots them.
+Dental practices are the NHS register from ODS, and nothing else. There used
+to be a curated overlay adding private practices, and a flag to tell the two
+apart, which is what the map's old NHS/private filter ran on. Both were
+retired: the layer is now a claim the source can support on its own, with
+nobody maintaining a list by hand. It costs the 215 private practices the
+overlay contributed. `data/curated/dental_practices_curated.json` is still in
+the repository if that trade is ever worth reversing.
 
 Postcode geography is API-backed. Postcodes resolve to LSOA, ward and borough
 through the [postcodes.io](https://postcodes.io) bulk API, cached per postcode,
@@ -121,20 +121,6 @@ To trigger one by hand, use **Run workflow** in the Actions tab, not
 **Re-run jobs** - a re-run replays the original commit rather than current
 `main`.
 
-## The AI panel
-
-The map has an optional question panel: ask for a comparison, a ranking or a
-summary of any ward or borough in plain English.
-
-The model never receives the dataset. It is given four tools, and the browser
-runs them against the JSON already loaded on the page, so every figure in an
-answer is the same number the map is drawing, nothing is uploaded, and the model
-cannot invent a statistic because it has none in its context.
-
-It is off by default. `data/map/assistant.js` has an empty `ASSISTANT_ENDPOINT`
-and the panel does not render until that points at a deployed Worker, so the map
-works normally without it. See `worker/README.md` to deploy one.
-
 ## Hosting
 
 GitHub Pages serves the repo root, so the site is the repo. Two constraints
@@ -144,7 +130,7 @@ worth knowing before changing paths:
   lives at `data/meta/`, not `data/_meta/`. Renaming it back will 404 in
   production while working perfectly locally.
 - The custom domain is set by the `CNAME` file, and adding one before the domain
-  resolves takes the site offline rather than moving it. See `DOMAIN.md`.
+  resolves takes the site offline rather than moving it.
 
 Point the domain at Pages with four `A` records for the apex
 (`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`) and a `CNAME` on `www`
@@ -153,7 +139,11 @@ to `<user>.github.io`. If the DNS is on Cloudflare, set those records to
 
 ## Handing this over
 
-For someone who just wants to refresh the map:
+**Read `HANDOVER.md` first.** It covers whether anything is
+required of you, how the monthly refresh works, and how to add data of
+your own with a CSV.
+
+The short version, for refreshing the map:
 
 1. Clone the repo
 2. `pip install -r requirements.txt`
