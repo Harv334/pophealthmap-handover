@@ -55,8 +55,9 @@ That is the whole setup. **No manual downloads are required** - every source is
 either fetched from an open API or committed to the repo. No accounts, no API
 keys.
 
-One file is optional: drop an NHS hospital CSV at `.cache/hospitals/Hospital.csv`
-to add hospital markers ([source](https://www.nhs.uk/about-us/nhs-website-datasets/)).
+Nothing has to be downloaded by hand. Hospitals used to want an NHS.uk CSV
+dropped into `.cache/`. That page no longer publishes the file, and the layer
+is derived from the ODS NHS trust sites register instead.
 
 ### Where the data comes from
 
@@ -136,6 +137,20 @@ Point the domain at Pages with four `A` records for the apex
 (`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`) and a `CNAME` on `www`
 to `<user>.github.io`. If the DNS is on Cloudflare, set those records to
 **DNS only** rather than proxied, or Pages cannot issue its certificate.
+
+### pophealth.uk
+
+This repository is the one that keeps https://pophealth.uk updated, and it will
+go on being maintained here.
+
+**Leave the domain pointed at this repository's own GitHub Pages site.** The
+`CNAME` file in this repo is what claims it. A custom domain can only be claimed
+by one repository at a time, and GitHub awards it to whichever published most
+recently, so a second repository carrying the same `CNAME` does not fail
+loudly: it silently takes the domain, and pophealth.uk starts serving that
+repository instead. Any copy or fork must therefore keep no `CNAME` and serve
+from its own `<account>.github.io/<repo>/` address. The handover build drops
+the file for exactly this reason.
 
 ## Handing this over
 
